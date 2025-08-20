@@ -1,2 +1,22 @@
-# JEM-coin
-a proof of engagement mined layer 1 cryptocurrency,  a finite supply cryptocurrency mined by user interaction in both the real world and online, by businesses new and old, drive user engagement in content user participation in anything and in real life,, enrolled users who engage with content are awarded a hash, a hash is a guess used to mine block
+# JEMs — Justify Every Moment
+
+This repository hosts an experimental implementation scaffold of the JEMs Layer‑1 blockchain and wallet ecosystem. The project is organized as a monorepo containing a Rust workspace for the chain and a TypeScript workspace for client libraries.
+
+## Layout
+
+- `chain/crates/jems-core` – core types and constants.
+- `chain/crates/jems-crypto` – cryptographic helpers (ed25519, VRF, BLS stubs).
+- `chain/crates/jems-rpc` – minimal JSON‑RPC server using axum.
+- `chain/crates/jems-node` – CLI binary `jems-node`.
+- `clients/wallet-core` – placeholder TypeScript wallet library.
+- `docs` – protocol notes and parameter tables.
+
+## Building
+
+```bash
+cargo test      # run Rust tests
+pnpm install    # install JS deps
+pnpm -r test    # run JS tests
+```
+
+These crates are early scaffolding and do not implement consensus or networking; they merely provide a starting point for further development.
