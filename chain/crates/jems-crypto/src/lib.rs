@@ -1,10 +1,11 @@
 //! Simplified cryptographic helpers.
 
 use rand::rngs::OsRng;
+use sha2::{Digest, Sha256};
 
 pub mod ed25519 {
     use super::*;
-    use ed25519_dalek::{Keypair, Signature, Signer, Verifier, PUBLIC_KEY_LENGTH};
+    use ed25519_dalek::{Keypair, PublicKey, Signature, Signer, PUBLIC_KEY_LENGTH};
 
     pub fn generate_keypair() -> Keypair {
         Keypair::generate(&mut OsRng)
@@ -21,21 +22,36 @@ pub mod ed25519 {
     pub fn public_key_bytes(key: &Keypair) -> [u8; PUBLIC_KEY_LENGTH] {
         key.public.to_bytes()
     }
+
+    pub fn public_key(key: &Keypair) -> PublicKey {
+        key.public
+    }
 }
 
-/// Dummy VRF placeholder.
+/// Deterministic VRF using ed25519 signatures and SHA-256 hashing.
 pub mod vrf {
-    use rand::{Rng, rngs::OsRng};
+    use super::ed25519;
+    use super::*;
+    use ed25519_dalek::{Keypair, PublicKey, Signature, Verifier};
 
-    pub fn prove(msg: &[u8]) -> (u64, u64) {
-        let mut rng = OsRng;
-        let out = rng.gen::<u64>() ^ (msg.len() as u64);
-        let proof = rng.gen::<u64>();
-        (out, proof)
+    pub fn prove(key: &Keypair, msg: &[u8]) -> (u64, Vec<u8>) {
+        let sig = ed25519::sign(key, msg);
+        let hash = Sha256::digest(sig.to_bytes());
+        let mut y_bytes = [0u8; 8];
+        y_bytes.copy_from_slice(&hash[..8]);
+        (u64::from_le_bytes(y_bytes), sig.to_bytes().to_vec())
     }
 
-    pub fn verify(_msg: &[u8], _out: u64, _proof: u64) -> bool {
-        true
+    pub fn verify(pk: &PublicKey, msg: &[u8], out: u64, proof: &[u8]) -> bool {
+        if let Ok(sig) = Signature::from_bytes(proof) {
+            if pk.verify(msg, &sig).is_ok() {
+                let hash = Sha256::digest(sig.to_bytes());
+                let mut y_bytes = [0u8; 8];
+                y_bytes.copy_from_slice(&hash[..8]);
+                return u64::from_le_bytes(y_bytes) == out;
+            }
+        }
+        false
     }
 }
 
@@ -63,9 +79,12 @@ mod tests {
     }
 
     #[test]
-    fn dummy_vrf() {
-        let (out, proof) = vrf::prove(b"test");
-        assert!(vrf::verify(b"test", out, proof));
+    fn vrf_roundtrip() {
+        let kp = ed25519::generate_keypair();
+        let msg = b"vrf";
+        let (out, proof) = vrf::prove(&kp, msg);
+        let pk = ed25519::public_key(&kp);
+        assert!(vrf::verify(&pk, msg, out, &proof));
     }
 
     #[test]
