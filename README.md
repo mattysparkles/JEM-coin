@@ -23,8 +23,10 @@ Install the following tools locally:
 
 ```bash
 pnpm -r install && cargo build
-just localnet          # boot three nodes + services
-just seed              # optional demo data
+./scripts/native/native-localnet.sh
+open http://localhost:3003    # example site
+# load extension (dev build) in your browser
+./scripts/native/seed-actions.sh
 ```
 
 Once running, open the local services:
@@ -35,6 +37,7 @@ Once running, open the local services:
 | Explorer | http://localhost:3000 |
 | Governance UI | http://localhost:3001 |
 | Actions Lab | http://localhost:3002 |
+| Example Site | http://localhost:3003 |
 | Indexer GraphQL | http://localhost:4000/graphql |
 
 See `docs/localnet-native.md` and `docs/db-options.md` for more details.

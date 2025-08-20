@@ -40,6 +40,14 @@ $TMUX_CMD send-keys -t "$SESSION":web.1 "pnpm --filter governance-ui dev" C-m
 $TMUX_CMD split-window -t "$SESSION":web.1
 $TMUX_CMD send-keys -t "$SESSION":web.2 "pnpm --filter actions-lab dev" C-m
 
+# Extension dev runner
+$TMUX_CMD new-window -t "$SESSION" -n extension
+$TMUX_CMD send-keys -t "$SESSION":extension "pnpm --filter jems-wallet-extension dev" C-m
+
+# Example site
+$TMUX_CMD new-window -t "$SESSION" -n site
+$TMUX_CMD send-keys -t "$SESSION":site "pnpm --filter jems-site-example dev" C-m
+
 cat <<MSG
 Local JEMs network started.
 RPC endpoints:
@@ -49,6 +57,7 @@ RPC endpoints:
 Explorer:       http://localhost:3000
 Governance UI:  http://localhost:3001
 Actions Lab:    http://localhost:3002
+Example Site:   http://localhost:3003
 Indexer:        http://localhost:4000/graphql
 
 Attach to the tmux session with:

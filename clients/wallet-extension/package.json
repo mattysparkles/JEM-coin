@@ -1,0 +1,8 @@
+{
+  "name": "jems-wallet-extension",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node -e \"console.log('wallet extension dev placeholder'); setInterval(()=>{},1000)\""
+  }
+}
