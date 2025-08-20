@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>JemsTracker Demo</title>
+  <script src="../track/jems.track.js" data-site-token="DEMO_SITE" defer></script>
+</head>
+<body>
+  <h1>JemsTracker Demo Site</h1>
+  <button id="demo-btn">Click me</button>
+  <script>
+    document.getElementById('demo-btn').addEventListener('click', function () {
+      window.JemsTracker.emit('click', { id: 'demo-btn' });
+    });
+  </script>
+</body>
+</html>

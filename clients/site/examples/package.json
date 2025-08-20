@@ -1,0 +1,11 @@
+{
+  "name": "jems-site-example",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "serve -l 3003 ."
+  },
+  "dependencies": {
+    "serve": "^14.2.0"
+  }
+}
