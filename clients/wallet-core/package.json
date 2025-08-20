@@ -8,6 +8,7 @@
     "test": "ts-node test/index.test.ts"
   },
   "dependencies": {
+    "bech32": "^2.0.0"
   },
   "devDependencies": {
     "typescript": "^5.4.0",

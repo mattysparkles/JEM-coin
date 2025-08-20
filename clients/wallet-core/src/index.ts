@@ -1,4 +1,14 @@
+import { bech32 } from 'bech32';
+
+/**
+ * Encode a public key into a Bech32 address with the `jem` human readable part.
+ *
+ * The entire public key bytes are encoded using Bech32's `toWords` function so
+ * that the resulting address matches the format used by the Rust `jems-core`
+ * crate. No hashing or truncation is performed – callers should provide an
+ * already‑derived 32 byte key if a shorter representation is required.
+ */
 export function addressFromPublicKey(pk: Uint8Array): string {
-  // simple bech32 placeholder using hex
-  return 'jem' + Buffer.from(pk).toString('hex');
+  const words = bech32.toWords(pk);
+  return bech32.encode('jem', words);
 }
