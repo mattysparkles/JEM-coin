@@ -1,0 +1,17 @@
+{
+  "name": "@jems/wallet-core",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "ts-node test/index.test.ts"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "ts-node": "^10.9.2",
+    "@types/node": "^18.0.0"
+  }
+}

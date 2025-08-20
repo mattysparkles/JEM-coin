@@ -1,0 +1,8 @@
+[workspace]
+members = [
+    "chain/crates/jems-core",
+    "chain/crates/jems-crypto",
+    "chain/crates/jems-rpc",
+    "chain/crates/jems-node"
+]
+resolver = "2"
