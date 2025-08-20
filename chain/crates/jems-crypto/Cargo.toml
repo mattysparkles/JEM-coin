@@ -6,4 +6,5 @@ edition = "2021"
 [dependencies]
 ed25519-dalek = "1.0"
 rand = "0.7"
+blst = "0.3"
 sha2 = "0.10"

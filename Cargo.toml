@@ -3,6 +3,9 @@ members = [
     "chain/crates/jems-core",
     "chain/crates/jems-crypto",
     "chain/crates/jems-rpc",
-    "chain/crates/jems-node"
+    "chain/crates/jems-node",
+    "chain/crates/jems-consensus",
+    "chain/crates/jems-storage",
+    "chain/crates/jems-p2p"
 ]
 resolver = "2"
