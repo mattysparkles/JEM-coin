@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-rust@v1
+        with:
+          rust-version: stable
+      - run: cargo fmt --all -- --check
+      - run: cargo clippy --all-targets -- -D warnings
+      - run: cargo test --all --locked
+
+  node:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+      - run: pnpm -r install --frozen-lockfile
+      - run: pnpm -r build
+      - run: pnpm -r test || true
+
+  simnet-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-rust@v1
+        with:
+          rust-version: stable
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - run: pnpm -r install --frozen-lockfile
+      - run: cargo build -p jems-node -p jems-rpc -p jems-consensus -p jems-storage
+      - run: |
+          tmux new-session -d -s ci 'jems-node --rpc-port 8545 --p2p-port 7001 --data-dir ci1'
+          tmux new-window -t ci -n node2 'jems-node --rpc-port 8546 --p2p-port 7002 --data-dir ci2'
+          sleep 10
+          node clients/wallet-core/bin/seed-demo.js || true
+          tmux kill-session -t ci
