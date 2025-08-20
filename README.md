@@ -1,15 +1,14 @@
 # JEMs — Justify Every Moment
 
-This repository hosts an experimental implementation scaffold of the JEMs Layer‑1 blockchain and wallet ecosystem. The project is organized as a monorepo containing a Rust workspace for the chain and a TypeScript workspace for client libraries.
+This repository hosts an experimental implementation scaffold of the JEMs Layer‑1 blockchain and wallet ecosystem. The project is organized as a monorepo containing a Rust workspace for the chain and a TypeScript workspace for client libraries and services.
 
 ## Layout
 
-- `chain/crates/jems-core` – core types and constants.
-- `chain/crates/jems-crypto` – cryptographic helpers (ed25519, VRF, BLS stubs).
-- `chain/crates/jems-rpc` – minimal JSON‑RPC server using axum.
-- `chain/crates/jems-node` – CLI binary `jems-node`.
-- `clients/wallet-core` – placeholder TypeScript wallet library.
-- `docs` – protocol notes and parameter tables.
+- `chain/crates` – Rust crates for core chain functionality.
+- `clients/indexer` – Node.js GraphQL indexer with metrics and healthcheck.
+- `clients/explorer` – Next.js block explorer UI.
+- `clients/sdk-web` and `clients/sdk-mobile` – presence proof stubs.
+- `docs` – protocol notes and API documentation.
 
 ## Building
 
@@ -19,4 +18,4 @@ pnpm install    # install JS deps
 pnpm -r test    # run JS tests
 ```
 
-These crates are early scaffolding and do not implement consensus or networking; they merely provide a starting point for further development.
+See `docs/indexer-graphql.md` and `docs/explorer.md` for usage information and `docs/zk-presence.md` for the presence proof roadmap.
