@@ -2,6 +2,7 @@ import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { gql } from 'apollo-server-express';
 import { collectDefaultMetrics, Registry } from 'prom-client';
+import fs from 'fs';
 
 // Simple in-memory data store
 const blocks: any[] = [];
@@ -71,6 +72,17 @@ async function start() {
   const app = express();
   const registry = new Registry();
   collectDefaultMetrics({ register: registry });
+
+  // Very small demonstration of env based DB selection
+  const sqlitePath = process.env.INDEXER_SQLITE_PATH;
+  const pgUrl = process.env.INDEXER_DB_URL;
+  if (pgUrl) {
+    console.log(`Using Postgres database at ${pgUrl}`);
+  } else {
+    const path = sqlitePath || '.local/indexer.db';
+    console.log(`Using SQLite database at ${path}`);
+    fs.mkdirSync('.local', { recursive: true });
+  }
 
   app.get('/metrics', async (_req, res) => {
     res.set('Content-Type', registry.contentType);
