@@ -16,6 +16,22 @@ export function addressFromPublicKey(pk: Uint8Array): string {
 export interface ProtocolParams {
   slot_secs: number;
   epoch_slots: number;
+  committee_size: number;
+  reward_split_leader_pct: number;
+  reward_split_committee_pct: number;
+  reward_split_honeypot_pct: number;
+  reward_split_ecosys_pct: number;
+  w_max: number;
+  lambda_decay: number;
+  ticket_cap_per_epoch: number;
+  ticket_rate_per_slot_max: number;
+}
+
+export interface EpochInfo {
+  epoch: number;
+  slot: number;
+  target_difficulty: number;
+  beacon: number[];
 }
 
 export async function getParams(endpoint: string): Promise<ProtocolParams> {
@@ -26,4 +42,14 @@ export async function getParams(endpoint: string): Promise<ProtocolParams> {
   });
   const json = await res.json();
   return json.result as ProtocolParams;
+}
+
+export async function getEpochInfo(endpoint: string): Promise<EpochInfo> {
+  const res = await fetch(endpoint, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ method: 'get_epoch_info' }),
+  });
+  const json = await res.json();
+  return json.result as EpochInfo;
 }
