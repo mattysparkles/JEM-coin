@@ -1,0 +1,45 @@
+{
+  "openrpc": "1.0.0",
+  "info": { "title": "Jems RPC", "version": "0.1.0" },
+  "methods": [
+    {
+      "name": "getNodeInfo",
+      "params": [],
+      "result": { "name": "info", "schema": { "type": "object" } }
+    },
+    {
+      "name": "getChainMeta",
+      "params": [],
+      "result": { "name": "meta", "schema": { "type": "object" } }
+    },
+    {
+      "name": "getBalance",
+      "params": [
+        { "name": "address", "schema": { "type": "string" } }
+      ],
+      "result": { "name": "balance", "schema": { "type": "object" } }
+    },
+    {
+      "name": "submitTx",
+      "params": [
+        { "name": "raw", "schema": { "type": "string" } }
+      ],
+      "result": { "name": "id", "schema": { "type": "object" } }
+    },
+    {
+      "name": "getTx",
+      "params": [
+        { "name": "id", "schema": { "type": "string" } }
+      ],
+      "result": { "name": "tx", "schema": { "type": "object" } }
+    },
+    {
+      "name": "getBlock",
+      "params": [
+        { "name": "hash", "schema": { "type": "string", "nullable": true } },
+        { "name": "height", "schema": { "type": "integer", "nullable": true } }
+      ],
+      "result": { "name": "block", "schema": { "type": "object" } }
+    }
+  ]
+}
