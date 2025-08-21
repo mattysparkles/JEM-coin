@@ -27,6 +27,9 @@ enum Commands {
     Run {
         #[arg(long, default_value = "127.0.0.1:8080")]
         rpc: SocketAddr,
+        /// Comma-separated list of bootstrap peer addresses.
+        #[arg(long, value_delimiter = ',')]
+        bootstrap: Vec<SocketAddr>,
     },
     /// Inspect or write protocol parameters.
     Params {
@@ -42,9 +45,12 @@ async fn main() -> Result<()> {
         Commands::Init {} => {
             println!("initialized");
         }
-        Commands::Run { rpc } => {
+        Commands::Run { rpc, bootstrap } => {
             let params = Arc::new(ProtocolParams::effective());
             println!("starting node; RPC at {rpc}");
+            if !bootstrap.is_empty() {
+                println!("bootstrapping from: {:?}", bootstrap);
+            }
             println!("{}", params.to_markdown_table());
             jems_rpc::serve(rpc, params).await;
         }
