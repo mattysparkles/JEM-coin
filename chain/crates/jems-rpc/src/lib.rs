@@ -6,14 +6,14 @@ use axum::{
     routing::{get, post},
     Json, Router,
 };
+use futures_util::{stream::Stream, StreamExt};
 use jems_core::ProtocolParams;
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
+use serde_json::{json, Value};
+use std::convert::Infallible;
 use std::{net::SocketAddr, sync::Arc};
 use tokio::sync::{broadcast, RwLock};
 use tokio_stream::wrappers::BroadcastStream;
-use futures_util::{stream::Stream, StreamExt};
-use std::convert::Infallible;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RpcRequest {
@@ -25,6 +25,21 @@ pub struct RpcRequest {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RpcResponse {
     pub result: Value,
+}
+
+#[derive(Debug, Serialize, Clone)]
+pub struct NodeInfo {
+    pub name: String,
+    pub version: String,
+}
+
+#[derive(Debug, Serialize, Clone)]
+pub struct ChainMeta {
+    pub height: u64,
+    pub finalized_height: u64,
+    pub epoch: u64,
+    pub round: u64,
+    pub peers: u64,
 }
 
 #[derive(Clone)]
@@ -52,35 +67,48 @@ pub enum Event {
 
 pub async fn handle(State(state): State<RpcState>, Json(req): Json<RpcRequest>) -> Json<RpcResponse> {
     match req.method.as_str() {
-        "get_params" => {
-            let params = state.params.read().await.clone();
-            Json(RpcResponse { result: serde_json::to_value(params).unwrap() })
+        "getNodeInfo" => {
+            let info = NodeInfo {
+                name: "jems-node".to_string(),
+                version: "0.1.0".to_string(),
+            };
+            Json(RpcResponse { result: json!(info) })
         }
-        "get_epoch_info" => {
-            let info = state.epoch.read().await.clone();
-            Json(RpcResponse { result: serde_json::to_value(info).unwrap() })
+        "getChainMeta" => {
+            let ep = state.epoch.read().await.clone();
+            let meta = ChainMeta {
+                height: ep.slot,
+                finalized_height: ep.slot,
+                epoch: ep.epoch,
+                round: ep.slot,
+                peers: 0,
+            };
+            Json(RpcResponse { result: json!(meta) })
         }
-        "set_params" => {
-            {
-                let mut params = state.params.write().await;
-                if let Some(v) = req.params.get("lambda_decay").and_then(|v| v.as_f64()) {
-                    params.lambda_decay = v;
-                }
-                if let Some(v) = req
-                    .params
-                    .get("ticket_cap_per_epoch")
-                    .and_then(|v| v.as_u64())
-                {
-                    params.ticket_cap_per_epoch = v;
-                }
-                let _ = state.tx.send(Event::ParamsUpdated {
-                    params: params.clone(),
-                    source: "governance".to_string(),
-                });
-            }
-            Json(RpcResponse { result: serde_json::json!("ok") })
+        "getBalance" => {
+            let addr = req
+                .params
+                .get("address")
+                .and_then(|v| v.as_str())
+                .unwrap_or("");
+            Json(RpcResponse { result: json!({"address": addr, "balance": 0}) })
         }
-        _ => Json(RpcResponse { result: serde_json::json!("ok") }),
+        "submitTx" => Json(RpcResponse { result: json!({"id": "0x0"}) }),
+        "getTx" => {
+            let id = req.params.get("id").and_then(|v| v.as_str()).unwrap_or("");
+            Json(RpcResponse { result: json!({"id": id, "status": "unknown"}) })
+        }
+        "getBlock" => {
+            let height = req.params.get("height").and_then(|v| v.as_u64()).unwrap_or(0);
+            let hash = req
+                .params
+                .get("hash")
+                .and_then(|v| v.as_str())
+                .map(|s| s.to_string())
+                .unwrap_or_else(|| format!("0x{:x}", height));
+            Json(RpcResponse { result: json!({"hash": hash, "height": height}) })
+        }
+        _ => Json(RpcResponse { result: json!("ok") }),
     }
 }
 
@@ -136,38 +164,3 @@ pub async fn serve(addr: SocketAddr, params: Arc<ProtocolParams>) {
     axum::serve(listener, app).await.expect("server");
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use axum::body::Body;
-    use axum::http::{Request, StatusCode};
-    use axum::{routing::post, Router};
-    use tower::ServiceExt;
-
-    #[tokio::test]
-    async fn params_update_emits_event() {
-        let (tx, mut rx) = broadcast::channel(16);
-        let state = RpcState {
-            params: Arc::new(RwLock::new(ProtocolParams::default())),
-            epoch: Arc::new(RwLock::new(EpochInfo {
-                epoch: 0,
-                slot: 0,
-                target_difficulty: 0,
-                beacon: [0u8; 32],
-            })),
-            tx,
-        };
-        let app = Router::new().route("/", post(super::handle)).with_state(state.clone());
-        let request = Request::post("/")
-            .header("content-type", "application/json")
-            .body(Body::from("{\"method\":\"set_params\", \"params\":{\"lambda_decay\":0.5}}"))
-            .unwrap();
-        let response = app.oneshot(request).await.unwrap();
-        assert_eq!(response.status(), StatusCode::OK);
-        let ev = rx.recv().await.unwrap();
-        match ev {
-            Event::ParamsUpdated { params, .. } => assert_eq!(params.lambda_decay, 0.5),
-            _ => panic!("expected params updated"),
-        }
-    }
-}
