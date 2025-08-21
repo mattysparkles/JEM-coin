@@ -19,13 +19,13 @@ fi
 
 # Start three jems nodes
 $TMUX_CMD new-session -d -s "$SESSION" -n node1
-$TMUX_CMD send-keys -t "$SESSION":node1 "jems-node --rpc-port 8545 --p2p-port 7001 --data-dir .local/node1" C-m
+$TMUX_CMD send-keys -t "$SESSION":node1 "jems-node run --rpc 127.0.0.1:8080" C-m
 
 $TMUX_CMD new-window -t "$SESSION" -n node2
-$TMUX_CMD send-keys -t "$SESSION":node2 "jems-node --rpc-port 8546 --p2p-port 7002 --data-dir .local/node2" C-m
+$TMUX_CMD send-keys -t "$SESSION":node2 "jems-node run --rpc 127.0.0.1:8081" C-m
 
 $TMUX_CMD new-window -t "$SESSION" -n node3
-$TMUX_CMD send-keys -t "$SESSION":node3 "jems-node --rpc-port 8547 --p2p-port 7003 --data-dir .local/node3" C-m
+$TMUX_CMD send-keys -t "$SESSION":node3 "jems-node run --rpc 127.0.0.1:8082" C-m
 
 sleep 5
 
@@ -51,10 +51,11 @@ $TMUX_CMD send-keys -t "$SESSION":site "pnpm --filter jems-site-example dev" C-m
 cat <<MSG
 Local JEMs network started.
 RPC endpoints:
-  http://localhost:8545
-  http://localhost:8546
-  http://localhost:8547
+  http://localhost:8080
+  http://localhost:8081
+  http://localhost:8082
 Explorer:       http://localhost:3000
+Params Dash:    http://localhost:3000/params
 Governance UI:  http://localhost:3001
 Actions Lab:    http://localhost:3002
 Example Site:   http://localhost:3003
