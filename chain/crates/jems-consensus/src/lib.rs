@@ -1,15 +1,18 @@
 //! Placeholder consensus crate for JEMs.
 //! Future work will implement PoE-VRF and committee finality.
 
-use jems_core::*; // re-export for downstream users
+use jems_core::{self, ProtocolParams};
+pub use jems_core::*;
 
 /// Stub consensus object.
-pub struct Consensus;
+pub struct Consensus {
+    params: ProtocolParams,
+}
 
 impl Consensus {
     /// Create a new placeholder consensus instance.
-    pub fn new() -> Self {
-        Self
+    pub fn new(params: ProtocolParams) -> Self {
+        Self { params }
     }
 }
 
@@ -19,6 +22,7 @@ mod tests {
 
     #[test]
     fn construct() {
-        let _c = Consensus::new();
+        let params = ProtocolParams::default();
+        let _c = Consensus::new(params);
     }
 }
