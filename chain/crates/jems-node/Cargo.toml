@@ -9,3 +9,4 @@ anyhow = "1.0"
 tokio = { version = "1", features=["macros", "rt-multi-thread"] }
 jems-core = { path = "../jems-core" }
 jems-rpc = { path = "../jems-rpc" }
+toml = "0.8"

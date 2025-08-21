@@ -8,14 +8,10 @@ use bech32::{self, ToBase32, Variant};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
-/// Human readable prefix for addresses.
-pub const HRP: &str = "jem";
-/// Slot duration in seconds.
-pub const SLOT_SECS: u64 = 4;
-/// Number of slots per epoch.
-pub const EPOCH_SLOTS: u64 = 21_600;
-/// Maximum engagement weight.
-pub const W_MAX: u64 = 1_000;
+pub mod params;
+pub use params::{
+    ActionKind, ProtocolParams, ADDR_HRP, W_MAX, w_for_action,
+};
 
 /// 256-bit hash.
 pub type Hash = [u8; 32];
@@ -45,30 +41,7 @@ impl Address {
 
     /// Encode to bech32 using the canonical HRP.
     pub fn bech32(&self) -> String {
-        bech32::encode(HRP, self.0.to_base32(), Variant::Bech32).expect("bech32")
-    }
-}
-
-/// Kinds of on-chain social engagement actions.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-pub enum ActionKind {
-    Like,
-    CheckIn,
-    Relay,
-    Visit,
-    Post,
-}
-
-impl ActionKind {
-    /// Weight contribution for a single action of this kind.
-    pub fn weight(self) -> u64 {
-        match self {
-            ActionKind::Like => 1,
-            ActionKind::CheckIn => 5,
-            ActionKind::Relay => 2,
-            ActionKind::Visit => 10,
-            ActionKind::Post => 15,
-        }
+        bech32::encode(ADDR_HRP, self.0.to_base32(), Variant::Bech32).expect("bech32")
     }
 }
 
@@ -183,10 +156,10 @@ pub fn derive_honeypot(header: &BlockHeader, beacon: Hash) -> HoneyPot {
 }
 
 /// Apply exponential decay to an engagement weight and add new action weights.
-pub fn apply_decay(prev: u64, lambda: f64, actions: &[ActionKind]) -> u64 {
-    let decayed = (prev as f64 * lambda) as u64;
-    let added: u64 = actions.iter().map(|k| k.weight()).sum();
-    (decayed + added).min(W_MAX)
+pub fn apply_decay(prev: u64, params: &ProtocolParams, actions: &[ActionKind]) -> u64 {
+    let decayed = (prev as f64 * params.lambda_decay) as u64;
+    let added: u64 = actions.iter().map(|k| w_for_action(*k) as u64).sum();
+    (decayed + added).min(params.w_max)
 }
 
 #[cfg(test)]
@@ -196,15 +169,16 @@ mod tests {
     #[test]
     fn address_bech32_prefix() {
         let addr = Address::from_public_key(&[1, 2, 3]);
-        assert!(addr.bech32().starts_with(HRP));
+        assert!(addr.bech32().starts_with(ADDR_HRP));
     }
 
     #[test]
     fn weight_decay_caps() {
-        let w = apply_decay(900, 0.5, &[ActionKind::Visit, ActionKind::Like]);
-        assert_eq!(w, 461); // 900->450 +11
-        let w2 = apply_decay(W_MAX, 1.0, &[ActionKind::Visit; 100]);
-        assert_eq!(w2, W_MAX);
+        let params = ProtocolParams::default();
+        let w = apply_decay(900, &params, &[ActionKind::Visit, ActionKind::Like]);
+        assert_eq!(w, 925); // 900->720 +205
+        let w2 = apply_decay(params.w_max, &params, &[ActionKind::Visit; 100]);
+        assert_eq!(w2, params.w_max);
     }
 
     #[test]

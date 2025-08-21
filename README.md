@@ -41,3 +41,11 @@ Once running, open the local services:
 | Indexer GraphQL | http://localhost:4000/graphql |
 
 See `docs/localnet-native.md` and `docs/db-options.md` for more details.
+
+## Tuning Parameters
+
+```bash
+jemsd params write --path ./jems.config.toml
+# edit jems.config.toml as desired
+JEMS_CONFIG=./jems.config.toml jemsd run --rpc 127.0.0.1:8080
+```

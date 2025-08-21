@@ -12,3 +12,4 @@ jems-core = { path = "../jems-core" }
 
 [dev-dependencies]
 tower = "0.5"
+hyper = "0.14"

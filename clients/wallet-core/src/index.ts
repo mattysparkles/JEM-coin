@@ -12,3 +12,18 @@ export function addressFromPublicKey(pk: Uint8Array): string {
   const words = bech32.toWords(pk);
   return bech32.encode('jem', words);
 }
+
+export interface ProtocolParams {
+  slot_secs: number;
+  epoch_slots: number;
+}
+
+export async function getParams(endpoint: string): Promise<ProtocolParams> {
+  const res = await fetch(endpoint, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ method: 'get_params' }),
+  });
+  const json = await res.json();
+  return json.result as ProtocolParams;
+}

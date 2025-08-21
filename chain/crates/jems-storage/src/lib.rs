@@ -1,7 +1,7 @@
 //! Simple RocksDB based storage for JEMs chain.
 use std::path::Path;
 
-use jems_core::{Address, Block, BlockHeader, Epoch, Hash, Ticket};
+use jems_core::{Address, Block, BlockHeader, Epoch, Hash, Ticket, ProtocolParams};
 use rocksdb::{ColumnFamilyDescriptor, Options, DB, Error as RocksError};
 
 /// Names of the column families used by the chain.
@@ -14,6 +14,7 @@ const CF_WEIGHTS: &str = "weights";
 const CF_HONEYPOTS: &str = "honeypots";
 const CF_INDICES: &str = "indices";
 const CF_RECEIPTS: &str = "receipts";
+const CF_PARAMS: &str = "params";
 
 /// Wrapper over RocksDB exposing helper methods for common operations.
 pub struct Storage {
@@ -36,6 +37,7 @@ impl Storage {
             ColumnFamilyDescriptor::new(CF_HONEYPOTS, Options::default()),
             ColumnFamilyDescriptor::new(CF_INDICES, Options::default()),
             ColumnFamilyDescriptor::new(CF_RECEIPTS, Options::default()),
+            ColumnFamilyDescriptor::new(CF_PARAMS, Options::default()),
         ];
         let db = DB::open_cf_descriptors(&opts, path, cfs)?;
         Ok(Self { db })
@@ -99,6 +101,22 @@ impl Storage {
         match self.db.get_cf(self.cf(CF_TICKETS), key)? {
             Some(bytes) => Ok(bincode::deserialize(&bytes).expect("decode tickets")),
             None => Ok(Vec::new()),
+        }
+    }
+
+    /// Store protocol params snapshot for an epoch.
+    pub fn put_params_snapshot(&self, epoch: Epoch, params: &ProtocolParams) -> Result<(), RocksError> {
+        let key = epoch.0.to_le_bytes();
+        let bytes = bincode::serialize(params).expect("serialize params");
+        self.db.put_cf(self.cf(CF_PARAMS), key, bytes)
+    }
+
+    /// Get protocol params snapshot for an epoch.
+    pub fn get_params_snapshot(&self, epoch: Epoch) -> Result<Option<ProtocolParams>, RocksError> {
+        let key = epoch.0.to_le_bytes();
+        match self.db.get_cf(self.cf(CF_PARAMS), key)? {
+            Some(bytes) => Ok(Some(bincode::deserialize(&bytes).expect("decode params"))),
+            None => Ok(None),
         }
     }
 }
