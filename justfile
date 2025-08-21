@@ -16,3 +16,12 @@ stop:
 
 seed:
     ./scripts/native/seed-actions.sh
+
+website-dev:
+    cd clients/website && pnpm dev
+
+website-build:
+    cd clients/website && pnpm build
+
+website-start:
+    cd clients/website && pnpm start

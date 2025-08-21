@@ -1,3 +1,7 @@
 /target
 node_modules
 /dist
+clients/website/.env.local
+clients/website/.next
+clients/website/test-results
+clients/website/public/screenshot-*.png
