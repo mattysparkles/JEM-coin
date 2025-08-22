@@ -20,7 +20,7 @@ export default function JoinPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
       <h1 className="text-2xl font-semibold">Join the Waitlist</h1>
-      <p className="mt-2 text-slate-600">Get updates, testnet invites, and early docs. Add your email and what you’d like to build or validate. We’ll reach out with the next steps.</p>
+      <p className="mt-2 text-slate-600">Get updates, testnet invites, and early docs. Add your email and what you would like to build or validate. We will reach out with the next steps.</p>
 
       <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
         <input type="text" name="website" className="hidden" tabIndex={-1} autoComplete="off" />
@@ -36,7 +36,7 @@ export default function JoinPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium">I'm interested in</label>
+          <label className="block text-sm font-medium">I am interested in</label>
           <select name="interest" className="mt-1 w-full border rounded px-3 py-2">
             <option value="builder">Builder</option>
             <option value="validator">Validator</option>
@@ -59,4 +59,3 @@ export default function JoinPage() {
     </div>
   )
 }
-

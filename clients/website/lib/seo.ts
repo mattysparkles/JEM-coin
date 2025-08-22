@@ -6,11 +6,12 @@ export const siteMetadata = {
     title: 'JEM — Proof of Engagement',
     description:
       'JEM is a PoE-VRF blockchain where real user activity fuels consensus.',
-    images: ['/og.png'],
+    images: [
+      (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000') + '/og.png',
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'JEM — Proof of Engagement',
   },
 }
-
