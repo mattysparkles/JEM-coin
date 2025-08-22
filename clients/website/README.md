@@ -1,12 +1,26 @@
-# JEMs Website
+# Website
 
-Marketing, documentation and status site built with Next.js.
+Next.js marketing + docs site for JEM.
 
-## Quick start
+Run locally:
 
-```bash
+```
 pnpm install
 pnpm dev
 ```
 
-Visit http://localhost:3000.
+Build:
+
+```
+pnpm build
+pnpm start
+```
+
+Form data storage:
+
+- Form submissions are appended as newline-delimited JSON in `DATA_DIR` (defaults to `./data`).
+- Waitlist: `waitlist.ndjson`
+- Validators: `validators.ndjson`
+
+Configure `.env.local` using `.env.local.example`.
+

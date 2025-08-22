@@ -14,8 +14,19 @@ const rpcResponse = {
 
 test('landing has hero', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1, name: 'JEMs' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: /JEM/i })).toBeVisible();
 });
+
+test('join form submits', async ({ page }) => {
+  await page.route('/api/join', (route) => {
+    route.fulfill({ status: 200, body: JSON.stringify({ ok: true }), contentType: 'application/json' })
+  })
+  await page.goto('/join')
+  await page.fill('input[name="name"]', 'Test User')
+  await page.fill('input[name="email"]', 'test@example.com')
+  await page.click('button:has-text("Join")')
+  await expect(page.getByRole('status')).toHaveText(/waitlist/i)
+})
 
 test.skip('docs roadmap renders content', async ({ page }) => {
   await page.goto('/docs/roadmap');

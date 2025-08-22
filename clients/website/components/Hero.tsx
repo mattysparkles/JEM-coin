@@ -1,24 +1,15 @@
 export default function Hero({ explorerUrl }: { explorerUrl?: string }) {
+  const gh = process.env.NEXT_PUBLIC_GITHUB_URL || 'https://github.com/mattysparkles/JEM-coin'
   return (
-    <section className="py-24 text-center" id="main">
-      <h1 className="text-5xl font-bold mb-6">JEMs</h1>
-      <p className="mb-8 text-xl">A lightweight blockchain for everyone.</p>
-      <div className="flex justify-center gap-4">
-        {explorerUrl ? (
-          <a
-            href={explorerUrl}
-            className="px-6 py-3 bg-blue-600 text-white rounded-md"
-          >
-            Explorer
-          </a>
-        ) : null}
-        <a
-          href="https://github.com/JEM-coin/JEM-coin"
-          className="px-6 py-3 border rounded-md"
-        >
-          GitHub
-        </a>
+    <section className="py-20 text-center" id="main">
+      <h1 className="text-3xl sm:text-5xl font-extrabold mb-4">JEM: Proof‑of‑Engagement, not just Proof‑of‑Work.</h1>
+      <p className="mb-6 text-lg text-slate-700 max-w-2xl mx-auto">JEM is a PoE‑VRF blockchain where real user activity fuels consensus. Earn, validate, and build on a chain that measures what actually matters: people showing up and engaging.</p>
+
+      <div className="mt-6 flex justify-center gap-3">
+        <a href={gh} className="px-4 py-2 bg-slate-900 text-white rounded-lg">View on GitHub</a>
+        <a href="/join" className="px-4 py-2 border rounded-lg">Join the Waitlist</a>
+        <a href="/validators" className="px-4 py-2 border rounded-lg">Apply as Validator</a>
       </div>
     </section>
-  );
+  )
 }
