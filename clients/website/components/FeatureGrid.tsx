@@ -1,3 +1,5 @@
+import Tooltip from '@/components/Tooltip'
+
 const features = [
   {
     title: 'PoE‑VRF Consensus',
@@ -20,7 +22,13 @@ export default function FeatureGrid() {
       <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
         {features.map((f) => (
           <div key={f.title} className="p-6 rounded-2xl shadow-sm border">
-            <h3 className="text-lg font-semibold mb-2">{f.title}</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              {f.title.includes('PoE‑VRF') ? (
+                <><Tooltip term="PoE-VRF">PoE‑VRF</Tooltip> Consensus</>
+              ) : (
+                f.title
+              )}
+            </h3>
             <p className="text-slate-600 text-sm">{f.description}</p>
           </div>
         ))}

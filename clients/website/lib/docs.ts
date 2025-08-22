@@ -5,6 +5,7 @@ import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolink from 'rehype-autolink-headings';
 import rehypeRaw from 'rehype-raw';
+import { rehypeGlossary } from './glossary';
 
 const DOCS_DIR = path.join(process.cwd(), '..', '..', 'docs');
 
@@ -33,7 +34,7 @@ export async function getDocBySlug(slug: string[]): Promise<Doc | null> {
         mdxOptions: {
           // rehype plugins types are not compatible
           remarkPlugins: [remarkGfm as any],
-          rehypePlugins: [rehypeRaw as any, rehypeSlug as any, [rehypeAutolink as any, { behavior: 'wrap' }]],
+        rehypePlugins: [rehypeRaw as any, rehypeGlossary as any, rehypeSlug as any, [rehypeAutolink as any, { behavior: 'wrap' }]],
         },
       },
     });

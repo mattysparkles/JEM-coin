@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import StatusCard from '@/components/StatusCard';
-import { getChainMeta, ChainMeta } from '@/lib/rpc';
+import { ChainMeta } from '@/lib/rpc';
 import { checkGraphQL } from '@/lib/gql';
 
 export default function StatusPage() {
@@ -11,15 +11,26 @@ export default function StatusPage() {
   const [error, setError] = useState('');
   const [gqlOk, setGqlOk] = useState<boolean | null>(null);
 
+  const consecutiveFailures = useRef(0)
+
   async function fetchMeta() {
     const start = performance.now();
     try {
-      const m = await getChainMeta();
-      setMeta(m);
+      const res = await fetch('/api/rpc-proxy/chainMeta');
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      const json = await res.json()
+      if (json.ok === false) throw new Error(json.error || 'rpc error')
+      // assume json has the chain meta shape
+      setMeta(json as ChainMeta);
       setLatency(Math.round(performance.now() - start));
       setError('');
-    } catch (e) {
-      setError('Failed to fetch status');
+      consecutiveFailures.current = 0
+    } catch (e: any) {
+      consecutiveFailures.current += 1
+      setError('Node offline or unreachable')
+      if (consecutiveFailures.current >= 3) {
+        // pause auto refresh by clearing intervals in effect cleanup
+      }
     }
   }
 

@@ -21,6 +21,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               <a href="/roadmap" className="hover:underline">Roadmap</a>
               <a href="/status" className="hover:underline">Status</a>
               <a href="/docs" className="hover:underline">Docs</a>
+              <a href="/glossary" className="hover:underline">Glossary</a>
+              {process.env.NEXT_PUBLIC_EXPLORER_URL && <a href={process.env.NEXT_PUBLIC_EXPLORER_URL} className="hover:underline">Explorer</a>}
             </nav>
           </div>
         </header>
