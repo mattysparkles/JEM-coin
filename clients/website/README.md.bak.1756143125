@@ -1,0 +1,11 @@
+# JEM Website
+
+Run locally:
+
+pnpm install
+pnpm build
+pnpm start
+
+Form data stored under `DATA_DIR` (./data by default): `waitlist.ndjson` and `validators.ndjson`.
+
+Glossary: add terms in `lib/glossary.ts`.
