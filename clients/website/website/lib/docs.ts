@@ -41,11 +41,22 @@ export async function getDocBySlug(slug: string[]): Promise<Doc | null> {
   for (const d of dirs) {
     try {
       let source = await fs.readFile(path.join(d, `${slug.join('/')}.md`), 'utf8');
-    // convert task lists to disabled checkboxes
-    source = source.replace(/^- \[ \] /gm, '- <input type="checkbox" disabled /> ');
-    source = source.replace(/^- \[x\] /gim, '- <input type="checkbox" disabled checked /> ');
-    const toc = Array.from(source.matchAll(/^##\s+(.*)/gm)).map((m) => {
-      const text = m[1];
+      // Special handling for whitepaper drafts that may contain both
+      // an intro stub and the full text. If a second top-level heading
+      // exists, prefer rendering from that point onward.
+      if (slug.length === 1 && slug[0] === 'whitepaper') {
+        const firstH1 = source.indexOf('# ');
+        const nextH1 = source.indexOf('\n# ', Math.max(0, firstH1 + 2));
+        if (nextH1 !== -1) {
+          // Slice from the second H1 and drop the leading newline
+          source = source.slice(nextH1 + 1);
+        }
+      }
+      // convert task lists to disabled checkboxes
+      source = source.replace(/^- \[ \] /gm, '- <input type="checkbox" disabled /> ');
+      source = source.replace(/^- \[x\] /gim, '- <input type="checkbox" disabled checked /> ');
+      const toc = Array.from(source.matchAll(/^##\s+(.*)/gm)).map((m) => {
+        const text = m[1];
       const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-');
       return { id, text };
     });
