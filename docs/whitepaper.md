@@ -1,3 +1,12 @@
+# Whitepaper
+
+For the current protocol draft, see:
+
+- [Protocol v0.3](./protocol-v0.3.md)
+
+This page will be updated to the full whitepaper as it evolves.
+
+
 # JEMs — Justify Every Moment
 
 Layer 1 Proof of Engagement Blockchain with VRF Leader Election, Orphan Honey Pot Rewards, and Modular Engagement SDK — Draft v0.3 • August 19, 2025
@@ -77,3 +86,4 @@ Phases: Local Testnet → Public Testnet → Mainnet Candidate → Ecosystem. Se
 JEMs aims to anchor community value in real engagement — Justify Every Moment.
 
 [Repository and issues ↗](https://github.com/mattysparkles/JEM-coin)
+

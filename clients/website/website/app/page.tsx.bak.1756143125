@@ -1,0 +1,57 @@
+import Tooltip from '@/components/Tooltip';
+import siteMetadata from '@/lib/seo';
+
+export default function Page(){
+  const github = process.env.NEXT_PUBLIC_GITHUB_URL || 'https://github.com/mattysparkles/JEM-coin';
+  return (
+    <main>
+      <section className="py-20 bg-gradient-to-b from-white to-gray-50">
+        <div className="max-w-6xl mx-auto px-6 text-center">
+          <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">JEM: Proof‑of‑Engagement, not just Proof‑of‑Work.</h1>
+          <p className="mt-6 text-lg text-gray-700">JEM is a <Tooltip term="PoE-VRF">PoE‑VRF</Tooltip> blockchain where real user activity fuels consensus. Earn, validate, and build on a chain that measures what actually matters: people showing up and engaging.</p>
+          <div className="mt-8 flex justify-center gap-4">
+            <a href={github} target="_blank" rel="noreferrer" className="px-6 py-3 border rounded-md">View on GitHub</a>
+            <a href="/join" className="px-6 py-3 bg-blue-600 text-white rounded-md">Join the Waitlist</a>
+            <a href="/validators" className="px-6 py-3 border rounded-md">Apply as Validator</a>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16">
+        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-6">
+          <div className="p-6 bg-white rounded-2xl shadow">
+            <h3 className="font-semibold mb-2">PoE‑VRF Consensus</h3>
+            <p className="text-gray-700">Blocks proposed via verifiable randomness (VRF) weighted by engagement—spam‑resistant, fair, and measurable.</p>
+          </div>
+          <div className="p-6 bg-white rounded-2xl shadow">
+            <h3 className="font-semibold mb-2">Committee Finality</h3>
+            <p className="text-gray-700">HotStuff‑style finality gives fast, deterministic confirmation with slashing for misbehavior.</p>
+          </div>
+          <div className="p-6 bg-white rounded-2xl shadow">
+            <h3 className="font-semibold mb-2">Built for Builders</h3>
+            <p className="text-gray-700">Clean JSON‑RPC & GraphQL, reference wallet, and an on‑site engagement tracker you can embed.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-6">
+          <h2 className="text-2xl font-bold mb-4">How it works</h2>
+          <ol className="list-decimal list-inside space-y-3 text-gray-700">
+            <li><strong>Track Consentful Engagement</strong> — users opt in via a lightweight tracker or wallet; events are signed and rate‑limited.</li>
+            <li><strong>PoE Epochs + VRF</strong> — engagement transforms into epoch weight; a <Tooltip term="VRF">VRF</Tooltip> picks proposers and committees.</li>
+            <li><strong>Committee Finality</strong> — a HotStuff‑style committee finalizes blocks quickly with aggregated signatures.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section className="py-16">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-2xl font-bold mb-4">Early Engagement Validators</h2>
+          <p className="text-gray-700">Help shape the network. Run nodes, provide feedback, and earn early rewards. We’re selecting a small cohort with diverse infra and time zones. <a href="/validators" className="text-blue-600">Apply →</a></p>
+        </div>
+      </section>
+
+    </main>
+  );
+}
