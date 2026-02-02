@@ -29,14 +29,14 @@ export default function Tooltip({ term, children }: { term: string; children: Re
         {children}
       </button>
       {label && (
-        <div
+        <span
           role="tooltip"
           aria-hidden={!open}
           className={`z-50 w-64 p-3 text-sm text-left bg-white border rounded shadow-md absolute mt-2 ${open ? 'block' : 'hidden'}`}
         >
-          <div className="font-semibold mb-1">{term}</div>
-          <div className="text-sm text-gray-700">{label}</div>
-        </div>
+          <span className="block font-semibold mb-1">{term}</span>
+          <span className="block text-sm text-gray-700">{label}</span>
+        </span>
       )}
     </span>
   );

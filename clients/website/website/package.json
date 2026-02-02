@@ -10,7 +10,7 @@
     "test": "playwright test"
   },
   "dependencies": {
-    "next": "^14.2.3",
+    "next": "^14.2.35",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "next-mdx-remote": "^5.0.0",
@@ -29,7 +29,7 @@
     "@tailwindcss/typography": "^0.5.10",
     "typescript": "^5.3.3",
     "eslint": "^8.56.0",
-    "eslint-config-next": "^14.2.3",
+    "eslint-config-next": "^16.1.1",
     "@playwright/test": "^1.42.1"
   }
 }
