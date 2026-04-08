@@ -10,10 +10,10 @@
     "test": "playwright test"
   },
   "dependencies": {
-    "next": "^16.1.5",
+    "next": "^16.1.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "next-mdx-remote": "^5.0.0",
+    "next-mdx-remote": "^6.0.0",
     "remark-gfm": "^3.0.1",
     "rehype-slug": "^5.1.0",
     "rehype-autolink-headings": "^6.1.1",
